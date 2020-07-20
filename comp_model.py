@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 
+# Change this variable to change which file to load
 file_path = './data/comp01.ctt'
 
 def import_dataset(path_to_dataset = file_path ):
@@ -75,6 +76,7 @@ def import_dataset(path_to_dataset = file_path ):
     # Now we have a constraint list.
     return CompModel(courses_count,course_list,rooms_count,rooms_list,days_count,periods_count,curricula_count,curricula_list,constraint_count,constraint_list)
 
+#This is the class that will hold our values
 class CompModel(object):
     def __init__(self,courses,courses_list,rooms,rooms_list,days,periods,curricula,curricula_list,constraints,constraints_list):
         self.courses        = courses
@@ -103,7 +105,7 @@ class CompModel(object):
     def get_constraints(self):
         return self.constraints, self.CONSTRAINT_LIST
 
-    # The following methods are used for printing.
+    # The following methods are used ONLY FOR printing.
     def print_courses(self):
         print(self.courses,' Courses:')
         for i in self.COURSES_LIST:
@@ -140,3 +142,5 @@ class CompModel(object):
        print('Periods: ',   self.periods)
        print('Curricula: ', self.curricula)
        print('Constraints: ',self.constraints)
+       
+    # There is no __str__() method yet.
