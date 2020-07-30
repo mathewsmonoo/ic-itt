@@ -9,7 +9,8 @@
     http://www.din.uem.br/sbpo/sbpo2014/pdf/arq0318.pdf
 }
 
-
+https://www.youtube.com/watch?v=kHyNqSnzP8Y
+13. Learning: Genetic Algorithms
 A ideia principal:
 -> População (*inicial)
     -> Mutação
@@ -17,6 +18,28 @@ A ideia principal:
             -> Fitness
                 -> Seleção
 /\ Nova população <-
+
+P(i) - Probabilidade de i
+F(i) - Fitness de i
+E    - somatorio
+        P(i) = (F(i)) / E(F(i))
+
+-Mechanism to transform fitness into probability of survival
+#2 - Rank space method
+    P1   = Pc
+    P2   = (1 - Pc) Pc
+    P3   = (1 - Pc)^2 Pc
+    Pn-1 = (1 - Pc)^n-2 Pc
+    Pn   = (1 - Pc)^n-1
+Simulated Annealing - Start with big step size and decrease it over time
+    because it resembles cooling down a hot metal
+
+#3 - 
+    Diversity rank X Fitness Rank
+
+some bits of the chromossome are number of objects
+some bits of the chromossome are size of objects
+some bits of the chromossome are structure on how the objects are articulated
 
 
 
