@@ -1,0 +1,81 @@
+{
+    http://www.din.uem.br/~ademir/sbpo/sbpo2015/pdf/143021.pdf
+    http://revistas.unoeste.br/index.php/ce/article/view/1306
+    http://www.scientiaplena.org.br/sp/article/view/163
+    https://www.podesenvolvimento.org.br/podesenvolvimento/article/view/158
+    https://pdfs.semanticscholar.org/bd6c/5a86b17762c06cad7664b73bad6ffe8891bd.pdf
+    https://www.researchgate.net/profile/Norton_Guimaraes/publication/274374054_Planejamento_de_Grade_de_Horario_em_uma_Universidade_Brasileira_usando_Algoritmos_Geneticos/links/551c62090cf20d5fbde53fa2.pdf
+    http://actakariri.crato.ifce.edu.br/index.php/actakariri/article/view/22
+    http://www.din.uem.br/sbpo/sbpo2014/pdf/arq0318.pdf
+}
+
+
+A ideia principal:
+-> População (*inicial)
+    -> Mutação
+        -> Crossover
+            -> Fitness
+                -> Seleção
+/\ Nova população <-
+
+
+
+-Heuristic is a technique designed for solving a problem more quickly when classic methods are too slow, 
+or for finding an approximate solution when classic methods fail to find any exact solution.
+
+- Algoritmo Memetico: algoritmos que utilizavam algum tipo de informaçao estrutural que ́e obtida e refinada à medida
+  que o algoritmo evolui e é transmitida de uma geração para a outra para melhorar o processo de busca.
+  A parcela "memetica" do individuo é separada; isso evita com que influencie nos genes mas ainda assim ajude.
+
+
+As caracteristicas:
+
+Times : 
+    nrWeeks,                                - 13
+    nrDays,             #in each week       - 7
+    slotsPerDay,        #time slots perday) - 288
+
+Rooms:
+    id, 
+    capacity
+
+Courses:
+    id,
+    time,
+    chairs,
+
+Curricula:
+    id,
+    numberOfCourses,
+    listOfCourses
+
+
+Students:
+    id,
+    list of courses
+    
+    alunos
+    turmas                  (qtd turmas, qtd alunos)
+    salas                   (qtd salas, qtd vagas por sala)
+    professores             (qtd aulas)
+    #periodos por semana    
+
+Conflitos:
+    Professor em uma sala só por horario
+    Uma turma por sala
+    Qtd alunos na turma >= qtd vagas na sala
+
+Comparações:
+
+
+Metodologia:
+*talvez AG classico nao possa ser utilizado
+
+Restrições Hard:
+1- O número de alunos em uma turma excede a capacidade da sala
+2- O número de alunos é muito menor do que a capacidade da sala. **quanto? pelo menos 40% da sala cheia??**
+3- Laboratórios e salas especiais
+
+
+Definição da População Inicial:
+    n alunos em m salas de maneira aleatória
