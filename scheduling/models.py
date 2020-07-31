@@ -64,7 +64,12 @@ class Data:
         for i in range(0, len(self.TEACHERS)):
             self._teachers.append(Teacher(self.TEACHERS[i][0],self.TEACHERS[i][1]))
 
-
+    def get_all_rooms(self):
+        holder = ""
+        for i in self._rooms:
+            holder +=  str(i._id) + " " + str(i._capacity) + "\n"     
+        return holder
+    
     def get_rooms(self):     return self._rooms
     def get_times(self):     return self._times
     def get_courses(self):   return self._courses
