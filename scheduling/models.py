@@ -10,15 +10,25 @@ class Course:
     def get_slots(self):    return self._slots
     def get_timesPerWeek(self):  return self._timesPerWeek
 
-MORNING_CLASSES = [
-    [1,"07:30"], #"08:20"], # First Class
-    [2,"08:20"], #"09:10"],
-        # 20min #break 
-    [3,"09:30"], #"10:20"], 
-    [4,"10:20"], #"11:10"],
-        # 10min #break 
-    [5,"11:20"], #"12:10"], 
-    [6,"12:10"], #"13:00"], # Last Class
+WEEK = {
+   #'DAY':ListOFClasses,
+    'MON':None,
+    'TUE':None,
+    'WED':None,
+    'THU':None,
+    'FRI':None,
+}
+
+TIMES = [
+    #[id, start - finish , class.default = None]
+    ["1", "07:30 - 08:20", None], # First Class
+    ["2", "08:20 - 09:10", None],
+    # 20min break
+    ["3", "09:30 - 10:20", None], 
+    ["4", "10:20 - 11:10", None],
+     # 10min break
+    ["5", "11:20 - 12:10", None], 
+    ["6", "12:10 - 13:00", None], # Last Class
 ]
 ROOMS = [
         ["R1", 25],
@@ -26,6 +36,7 @@ ROOMS = [
         ["R3", 45],
         ["R4", 40],
         ["R5", 35],
+        ["R6", 45],
 ]
 TEACHERS = [
     ["001", "Alberto"],
@@ -34,13 +45,7 @@ TEACHERS = [
     ["004", "Duda"],
     ["005", "Eder"]
 ]
-TIMES = [
-    ["TIME1", "07:00 - 07:50"],
-    ["TIME2", "07:50 - 08:40"],
-    ["TIME3", "08:40 - 09:30"],
-    ["TIME4", "10:20 - 11:10"],
-    ["TIME5", "11:30 - 12:20"],
-]
+
 COURSES = [
     Course("C1", TEACHERS[0], 20, 4),
     Course("C2", TEACHERS[1], 25, 2),
@@ -48,9 +53,8 @@ COURSES = [
     Course("C4", TEACHERS[3], 30, 3),
     Course("C5", TEACHERS[4], 35, 4),
     Course("C6", TEACHERS[0], 25, 2),
-    Course("C7", TEACHERS[1], 45, 4),
 ]
-   
+
 # This is sample data for testing
 class Data:
     def __init__(self):
@@ -89,17 +93,21 @@ class Data:
         return  f"{self.get_rooms()},\t{self.get_times()}\n"  \
                 f"{self.get_courses()},\t{self.get_teachers()}\n" 
 
-class Schedule:    
-    def __init__(self,id ,MORNING_CLASSES):
-        self._id = id
-        self._morning_classes = MORNING_CLASSES
-    
-    
-    
+# This class creates ONE day with 6 "times" and 1 slot for the CLASS
+class Day:
+    def __init__(self):
+        self._times = []
+        for i in range(0, len(TIMES)):
+            self._times.append(Time(TIMES[i][0],TIMES[i][1],TIMES[i][2]))
+            
+    def get_times(self):
+        holder = ''
+        for i in self._times:
+                holder += str(i._time) + " " + str(i._class) + '\n'
+        return str(holder)
     
     def __str__(self):
-        """"""    
-
+        return self.get_times()
 
 
 class Teacher:
@@ -120,12 +128,14 @@ class Room:
     def get_capacity(self): return self._capacity
     
 class Time:
-    def __init__(self, id, time):
-        self._id = id
-        self._time = time
+    def __init__(self, id, time, myClass):
+        self._id    = id
+        self._time  = time
+        self._class = myClass
 
     def get_id(self):       return self._id
     def get_time(self):     return self._time
+    def get_class(self):    return self._class
 
 class Class:
     def __init__(self, id, course, time, room):
@@ -148,17 +158,35 @@ def designate_times():
     """"""
 
 # \/ this must be done after associating the class time    
-def designate_rooms(COURSES = COURSES, ROOMS = ROOMS): 
+def count_capacity(): 
     # compare Courses with most students with rooms with less capacity
     sorted_courses  = sorted(COURSES, key=lambda x: x._slots, reverse = True) 
     sorted_rooms    = sorted(ROOMS,   key=lambda y: y[1],     reverse = True)
-    counter = 0 
+    counter = 0
     for i in sorted_courses:
         counter -= 1
         for j in sorted_rooms:
             if j[1] >= i._slots:
                 print(f'Course {i._id}  - Slots(students) {i._slots} :: Goes in {j[0]} with {j[1]} capacity')
-                #TODO - Here we associate the course(class) with the room    
+                
+                #TODO - Here we associate the course(class) with the room
+                
                 sorted_rooms.remove(j) # Here we remove the room, so it doesn't get associated with another course.
                 counter += 1 #
     print(f'Courses without rooms { -1 * counter}')
+
+def check_occupied(someDay):
+    
+    
+    pass
+
+def some():
+    myWeek = WEEK
+    myDay  = 1
+    for day in myWeek:
+        if (myWeek.get(day) is None):
+            print(f'{day} is empty')
+        else:
+            for every in day:
+                print (every)
+        print(f'{myWeek.get(day)}')
