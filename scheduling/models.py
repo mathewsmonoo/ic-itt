@@ -143,18 +143,22 @@ class Class:
     def set_room(self, room):       self._room    = room
     
     
+    
+def designate_times():
+    """"""
+
+# \/ this must be done after associating the class time    
 def designate_rooms(COURSES = COURSES, ROOMS = ROOMS): 
     # compare Courses with most students with rooms with less capacity
     sorted_courses  = sorted(COURSES, key=lambda x: x._slots, reverse = True) 
     sorted_rooms    = sorted(ROOMS,   key=lambda y: y[1],     reverse = True)
-
+    counter = 0 
     for i in sorted_courses:
+        counter -= 1
         for j in sorted_rooms:
-            if i._slots <= j[1]:
+            if j[1] >= i._slots:
                 print(f'Course {i._id}  - Slots(students) {i._slots} :: Goes in {j[0]} with {j[1]} capacity')
                 #TODO - Here we associate the course(class) with the room    
-    
-    
-
-
-    
+                sorted_rooms.remove(j) # Here we remove the room, so it doesn't get associated with another course.
+                counter += 1 #
+    print(f'Courses without rooms { -1 * counter}')
