@@ -81,7 +81,7 @@ class Data:
     def get_all_rooms(self):
         holder = ""
         for i in self._rooms:
-            holder +=  str(i._id) + " " + str(i._capacity) + "\n"     
+            holder +=  str(i._id) + " " + str(i._capacity)   
         return holder
     
     def get_rooms(self):     return self._rooms
@@ -91,23 +91,22 @@ class Data:
     
     def __str__(self):
         return  f"{self.get_rooms()},\t{self.get_times()}\n"  \
-                f"{self.get_courses()},\t{self.get_teachers()}\n" 
+                f"{self.get_courses()},\t{self.get_teachers()}" 
 
 # This class creates ONE day with 6 "times" and 1 slot for the CLASS
 class Day:
-    def __init__(self):
+    def __init__(self, dayName):
         self._times = []
         for i in range(0, len(TIMES)):
             self._times.append(Time(TIMES[i][0],TIMES[i][1],TIMES[i][2]))
-            
-    def get_times(self):
-        holder = ''
-        for i in self._times:
-                holder += str(i._time) + " " + str(i._class) + '\n'
-        return str(holder)
+
+        self._dayName = dayName    
+        
+        
+    def get_times(self): return self._times
     
     def __str__(self):
-        return self.get_times()
+        return str(self.get_times())
 
 
 class Teacher:
@@ -137,6 +136,7 @@ class Time:
     def get_time(self):     return self._time
     def get_class(self):    return self._class
 
+
 class Class:
     def __init__(self, id, course, time, room):
        self._id         = id
@@ -151,9 +151,7 @@ class Class:
     
     def set_time(self, time):       self._time    = time
     def set_room(self, room):       self._room    = room
-    
-    
-    
+
 def designate_times():
     """"""
 
@@ -180,13 +178,19 @@ def check_occupied(someDay):
     
     pass
 
-def some():
-    myWeek = WEEK
-    myDay  = 1
-    for day in myWeek:
-        if (myWeek.get(day) is None):
+def create_week():
+    myWeek = {}
+    for i in WEEK.keys():
+        d = Day(i)
+        myWeek[d._dayName] = d._times
+    return myWeek
+
+def print_week(myWeek):
+    _myWeek = myWeek
+    for key in _myWeek.keys():
+        if (_myWeek.get(key) is None):
             print(f'{day} is empty')
         else:
-            for every in day:
-                print (every)
-        print(f'{myWeek.get(day)}')
+            holder = _myWeek.get(key)
+            for each in holder:
+                print(each)
