@@ -10,6 +10,7 @@
 }
 
 https://www.youtube.com/watch?v=kHyNqSnzP8Y
+
 13. Learning: Genetic Algorithms
 A ideia principal:
 -> População (*inicial)
@@ -42,7 +43,6 @@ some bits of the chromossome are size of objects
 some bits of the chromossome are structure on how the objects are articulated
 
 
-
 -Heuristic is a technique designed for solving a problem more quickly when classic methods are too slow, 
 or for finding an approximate solution when classic methods fail to find any exact solution.
 
@@ -53,7 +53,7 @@ or for finding an approximate solution when classic methods fail to find any exa
 
 As caracteristicas:
 
-Times : 
+Times :
     nrWeeks,                                - 13
     nrDays,             #in each week       - 7
     slotsPerDay,        #time slots perday) - 288
@@ -96,8 +96,10 @@ Metodologia:
 
 Restrições Hard:
 1- O número de alunos em uma turma excede a capacidade da sala
-2- O número de alunos é muito menor do que a capacidade da sala. **quanto? pelo menos 40% da sala cheia??**
 3- Laboratórios e salas especiais
+
+
+2- O número de alunos é muito menor do que a capacidade da sala. **quanto? pelo menos 40% da sala cheia??**
 
 
 Definição da População Inicial:

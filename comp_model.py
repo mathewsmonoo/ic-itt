@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-# Change this variable to change which file to load
+# Change this variable to change which file to fetch
 file_path = './data/comp01.ctt'
 
 def import_dataset(path_to_dataset = file_path ):
@@ -79,16 +79,16 @@ def import_dataset(path_to_dataset = file_path ):
 #This is the class that will hold our values
 class CompModel(object):
     def __init__(self,courses,courses_list,rooms,rooms_list,days,periods,curricula,curricula_list,constraints,constraints_list):
-        self.courses        = courses
-        self.COURSES_LIST   = courses_list
-        self.rooms          = rooms
-        self.ROOMS_LIST     = rooms_list
-        self.days           = days
-        self.periods        = periods
-        self.curricula      = curricula
-        self.CURRICULA_LIST = curricula_list
-        self.constraints    = constraints
-        self.CONSTRAINT_LIST= constraints_list
+        self.courses         = courses
+        self.COURSES_LIST    = courses_list
+        self.rooms           = rooms
+        self.ROOMS_LIST      = rooms_list
+        self.days            = days
+        self.periods         = periods
+        self.curricula       = curricula
+        self.CURRICULA_LIST  = curricula_list
+        self.constraints     = constraints
+        self.CONSTRAINT_LIST = constraints_list
 
     # The following methods returns tuples of a certain count and list, whenever possible.
     # If not possible, returns only one value.
