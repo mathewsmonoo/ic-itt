@@ -32,15 +32,25 @@ for course,room in course_list,room_list:
 
 2nd 
 
+for time in times
+    check if time is not occupied
+        if vacant:
+            
 
 
 
+myDay.set_times() = recursion()
+
+def recursion(timesList)
+    if len(timesList <= 0):
 
 
+    if timesList[0].get_isOccupied:
+        return recursion(timesList[::-1]) # pass the list except timesList[0]
+    else:
 
 
-
-
+    
 
 
 
