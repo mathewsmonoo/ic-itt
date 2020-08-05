@@ -52,10 +52,11 @@ TIMES = [
 ]
 
 class Day: # Day Object
-    def __init__(self, id, name, times = []):
+    def __init__(self, id, name, times = [], classes = []):
         self._id     = id
         self._name   = name
         self._times  = times
+        self._classes = classes
         
         if len(self._times) == 0:
             for i in range(0,len(TIMES)):
@@ -70,8 +71,14 @@ class Day: # Day Object
     def get_times(self):
         return self._times
     
+    def get_classes(self): return self._classes
+    
+    def set_classes(self, classList):
+        for each in classList:
+            self._classes.append(each)
+            
     def __str__(self): 
-        return f'ID: {self._id}\tNAME: {self._name}\n{self.get_times()}'
+        return f'ID: {self._id}\tNAME: {self._name}\n{self.get_times()}\n{self.get_classes()}'
 
 class Class:
     def __init__(self, id, course, time, room):
@@ -102,11 +109,11 @@ def create_week(): #Creates Week
 
 
 def generateClasses():
+    classList = []            # To be returned in the end of the function
     counter = 0               # counter for generating Class Id 
-    classList = []
     rejectedCounter = 0       # counter of rejected iterations
-    myDay = Day(1,'MON')      # "MON" is just a holder
-    times = myDay.get_times()  # list with all times in that day
+    myDay = Day(1,'XXX')      
+    times = myDay.get_times() # list with all times in that day
 
     # Here we sort ROOMS and COURSES by most capacity and slots, respectively.
     sorted_rooms    = sorted(ROOMS,   key = lambda y: y[1],     reverse = True)
@@ -129,18 +136,17 @@ def generateClasses():
                         break
             else:                                       # If time is occupied
                 rejectedCounter += 1
-    return classList,rejectedCounter
+    myDay.set_classes(classList)
+    return myDay,rejectedCounter
 
 def doit(): # Runner
-    a,b = generateClasses()
-    print(f'{len(a)} Time Slots per day')
+    myDay,b = generateClasses()
+    print(f'{len(myDay)} Time Slots per day')
     print(f'\t\tClasses:')
-    for each in a:
+    for each in myDay:
         print(each.get_time(),' ',each.get_room())
     print(f'Rejected iterations: {b}')
-
-    newDay = Day(1,'MON',a)
-    print(newDay.get_day())
+    print(myDay)
 
 
 def allocate_rooms(myWeek):
