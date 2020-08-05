@@ -1,0 +1,51 @@
+.room
+.course
+..time
+.day
+...class
+
+We don't need to worry about teachers, one teacher per course  (later will become
+                                                                a field)
+we associate courses with classes
+we alocatte the classes inside rooms that have enough capacity
+we create days with empty times
+    association needed: times - classes
+we link each time with the class that has the same time
+
+
+insert loop ??
+1st course slots X room capacity
+    if ok : set course and room inside Class
+            # subtract 1 from Course timesPerWeek
+            remove room from that time
+            use time's change_availability method
+
+counter = 0 
+for course,room in course_list,room_list:
+    if (room.get_capacity() >= course.get_slots()):
+        for time in day:
+            if (time.get_isOccupied == False):
+            counter += 1 
+                newClass = Class(counter, course, time, room)
+
+
+
+2nd 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

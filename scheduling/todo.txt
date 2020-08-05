@@ -1,0 +1,7 @@
+ 1 - Divide the program in (at least):
+        models.py
+        functions.py
+        tests.py
+
+        [sampledata.py] *optional, temporary
+
