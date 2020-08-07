@@ -1,4 +1,8 @@
-import random as rnd
+from random import random
+from random import seed
+from random import choice
+from random import randint
+from datetime import datetime
 #--------------------------------------------------------------------------------
 # Classes
 #--------------------------------------------------------------------------------
@@ -116,7 +120,6 @@ class Schedule:
         return  f'ScheduleID:{self.get_id()}\n' \
                 f'Classes:\n{self.get_listOfClasses()}'
 
-
 #--------------------------------------------------------------------------------
 # Functions
 #--------------------------------------------------------------------------------
@@ -126,8 +129,8 @@ def create_times():
     counter = 0
     for i in range(5):     # 5 days
         for j in range(6): # 6 times per day
-            times.append(Time(counter,TIMESSTR[j]))
             counter += 1
+            times.append(Time(counter,TIMESSTR[j]))
     return times
 #--------------------------------------------------------------------------------
 # Sample Data
@@ -141,6 +144,8 @@ TIMESSTR = [
     "11:20 - 12:10",
     "12:10 - 13:00"
 ]
+
+TIMES = create_times()
 
 COURSES = [
     #     (id, students, times per week),
@@ -168,9 +173,6 @@ ROOMS = [
 #--------------------------------------------------------------------------------
 
 if __name__=="__main__":
-    #sampleDay = create_day()
-    #print(sampleDay)
-    TIMES = create_times()        #initialize TIMES list
     sampleSchedule = Schedule(1)  #create Schedule
     sampleSchedule.initialize()   #init schedule
-    print(sampleSchedule)         #test print
+    print(sampleSchedule)
