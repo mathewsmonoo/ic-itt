@@ -125,11 +125,12 @@ class Schedule:
                                 self._rejectedIterations += 1
                             break
                         break
+                    time.set_Available()
         return self
     
     def sort_classes(self):
         self._listOfClasses.sort(key = lambda x : x._time.get_id())
-        
+
     def print_grid(self):
         for day in DAYS:
             print("\t\t  ",day,end = "")
@@ -162,24 +163,26 @@ class Schedule:
                                   end = "  \t")
             print('\n','-'*150)
 
-    
-    
     def __str__(self): 
         return str(self.print_grid())
                 
                 
 class AllRndSchedule(Schedule):
     def initialize(self):
+        seed = (datetime.now())
         counter         = 0
-        roomList        = generate_rand_room_list()
-        coursesList     = generate_rand_courses_list()
-        self._times     = generate_rand_times_list()
+        rndRoomList     = ROOMS
+        shuffle(rndRoomList)
+        rndCoursesList  = COURSES
+        shuffle(rndCoursesList)
+        self._times     = create_times(DAYS,TIMESSTR)
+        shuffle(self._times)
 
-        for course in coursesList:
+        for course in rndCoursesList:
             for i in range(course.get_timesPerWeek()):             #4x
                 for time in self._times:        #30x                # loop and verify each time
                     if (time.get_isAvailable()):         # for availability
-                        for room in roomList:   #6x
+                        for room in rndRoomList:   #6x
                             if (course.get_students() <= room.get_capacity()): # check capacity for each room
                                 time.set_Occupied()
                                 myClass = Class(counter,course,time,room)
@@ -202,20 +205,19 @@ def create_times(DAYS,TIMESSTR):
             times.append(Time(counter,TIMESSTR[j], DAYS[i]))
     return times
 
-def generate_rand_room_list():
-    rndRoomList = ROOMS
-    shuffle(rndRoomList)
-    return rndRoomList
+def create_rand_schedule(id):
+    allRndSchedule = AllRndSchedule(id)
+    allRndSchedule.initialize()
+    allRndSchedule.sort_classes()
+    return allRndSchedule
 
-def generate_rand_courses_list():
-    rndCoursesList = COURSES
-    shuffle(rndCoursesList)
-    return rndCoursesList
-
-def generate_rand_times_list():
-    rndTimesList = TIMES
-    shuffle(rndTimesList)
-    return rndTimesList
+def create_population(size):
+    myPopulation = []
+    for i in range(size):
+        myIndividual = create_rand_schedule(i)
+        myPopulation.append(myIndividual)
+    return myPopulation
+        
 
 #--------------------------------------------------------------------------------
 # Sample Data
@@ -259,14 +261,16 @@ ROOMS = [
 #--------------------------------------------------------------------------------
 
 if __name__=="__main__":
-    allRndSchedule = AllRndSchedule(1)
-    allRndSchedule.initialize()
-    print("Created and Initialized Schedule.")
-    allRndSchedule.sort_classes()
-    print()
-    print("*"*150, "\n\t\tSchedule\n","*"*150)
+    # Single Schedule Creation
+    allRndSchedule = create_rand_schedule(1)
+    print("*"*150, "\n\tSchedule\n","*"*150)
     allRndSchedule.print_grid()
-    print()
-    print("*"*150, "\n\t\tSchedule with Allocation Info\n","*"*150)
+    print("*"*150, "\n\tSchedule with Allocation Info\n","*"*150)
     allRndSchedule.print_grid_with_allocation()
-    print(f'\nTotal Number of classes:{len(allRndSchedule.get_listOfClasses())}')
+
+    # Population of Schedules Creation
+    myPop = create_population(10)
+    for each in myPop:
+        print('\n',('*'*150))
+        print(f'Specimen #{each.get_id()}')
+        each.print_grid()
