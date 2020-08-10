@@ -84,7 +84,8 @@ class Schedule:
         self._id                 = id
         self._times              = []
         self._listOfClasses      = []
-        self._rejectedIterations = 0
+        self._conflicts          = 0
+        self._classCounter      =  0
 
         for i in (TIMES):
             self._times.append(i)
@@ -122,9 +123,11 @@ class Schedule:
                                 counter += 1                        #id counter
                                 self.add_class(myClass)
                             else:
-                                self._rejectedIterations += 1
+                                self._conflicts += 1
                             break
                         break
+                    else:
+                        self._conflicts += 1
                     time.set_Available()
         return self
     
@@ -141,10 +144,10 @@ class Schedule:
                 for eachClass in self._listOfClasses:
                     if eachClass._time.get_time() == time:
                         if eachClass._time.get_day() == day:
-                            print(f'{eachClass._course.get_id()} = '\
-                                  f'{eachClass._room.get_id()}',
+                            print(f'{eachClass._course.get_id()}('\
+                                  f'{eachClass._room.get_id()})',
                                   end = "\t\t ")
-            print('\n','-'*150)
+            print('\n','-'*130)
 
     def print_grid_with_allocation(self):
         for day in DAYS:
@@ -179,15 +182,27 @@ class AllRndSchedule(Schedule):
         shuffle(self._times)
 
         for course in rndCoursesList:
-            for i in range(course.get_timesPerWeek()):             #4x
-                for time in self._times:        #30x                # loop and verify each time
-                    if (time.get_isAvailable()):         # for availability
-                        for room in rndRoomList:   #6x
+            for i in range(course.get_timesPerWeek()):#4x
+                for time in self._times:              #20x       # loop and verify each time
+                    t = time.get_id()
+                    if (time.get_isAvailable()):                        # for availability
+                        for room in rndRoomList:      #4x
                             if (course.get_students() <= room.get_capacity()): # check capacity for each room
                                 time.set_Occupied()
                                 myClass = Class(counter,course,time,room)
                                 counter += 1                        #id counter
-                                self._listOfClasses.append(myClass)
+                                self.add_class(myClass)
+                                try:
+                                    nextTime = self._times[t+1]
+                                    if(nextTime.get_isAvailable()):
+                                        print("TestOK")
+                                        myDoubleClass = Class(counter,course,nextTime._time.get_id(),room)
+                                        nextTime.set_Occupied()
+                                        counter+=1
+                                        self.add_class(myDoubleClass)
+                                    break
+                                except:
+                                    pass
                                 break   # breaks room loop by the next time availability check
                         break           # breaks range(loop)
         return self
@@ -245,14 +260,14 @@ COURSES = [
     Course("GTIA5", 25, 4),
     Course("DW1A5", 30, 4),
     Course("ENGA5", 45, 4),
-    Course("PR1A5", 45, 4),
+    Course("PR1A5", 15, 4),
 ]
 
 ROOMS = [
     #    id , capacity
     Room("ROOM 1", 25),
     Room("ROOM 2", 30),
-    Room("ROOM 3", 40),
+    Room("ROOM 3", 25),
     Room("ROOM 4", 45),
 ]
 
@@ -269,8 +284,8 @@ if __name__=="__main__":
     allRndSchedule.print_grid_with_allocation()
 
     # Population of Schedules Creation
-    myPop = create_population(10)
+    myPop = create_population(100)
     for each in myPop:
-        print('\n',('*'*150))
+        print('\n',('*'*130))
         print(f'Specimen #{each.get_id()}')
         each.print_grid()
