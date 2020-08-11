@@ -160,7 +160,8 @@ class Schedule:
                                   end = "\t\t ")
             print('\n','-'*130)
             
-        print(f'Conflicts: {self.get_conflicts()}')
+        print(f'Conflicts: {self.get_conflicts()}'\
+              f'\tFitness: {self.get_fitness()}')
 
     def __str__(self):
         return str(self.print_grid())
@@ -178,10 +179,10 @@ class AllRndSchedule(Schedule):
         shuffle(self._times)
 
         occupiedTimes = {}
-        for course in rndCoursesList:
+        for course in rndCoursesList:                    
+            seed = (datetime.now())
             for i in range(course.get_timesPerWeek()):
-                for time in self._times:
-                                                        # loop and verify each time
+                for time in self._times:    # loop and verify each time  
                     t = time.get_id()
                     if (t not in occupiedTimes):
                         for room in rndRoomList: 
@@ -224,11 +225,22 @@ class Population:
     def get_id(self):           return self._id
     def get_schedules(self):    return self._schedules
     
+    def initialize(self, size):
+        for i in range(size):
+            myIndividual = create_rand_schedule(i)
+            self._schedules.append(myIndividual)    
+            
     def print_schedules(self):
         for each in self._schedules:
             each.print_grid()
-            print(each.get_fitness())
-
+            
+    def print_population_info(self):
+        print('-'*55)
+        print(f'Schedule ID\t|\tFitness\t\t| Conflicts |')
+        print('-'*55)
+        for each in self.get_schedules():
+            print(f'\t{each.get_id()}\t| {each.get_fitness()}\t| {each.get_conflicts()}')
+            
 
 #--------------------------------------------------------------------------------
 # Functions
@@ -291,6 +303,7 @@ ROOMS = [
     Room("ROOM 2", 30),
     Room("ROOM 3", 25),
     Room("ROOM 4", 45),
+    Room("ROOM 5", 40),
 ]
 
 #--------------------------------------------------------------------------------
@@ -304,7 +317,16 @@ if __name__ == "__main__":
     allRndSchedule.print_grid()
 
     # Population of Schedules Creation
-    myPop = Population(1,create_population(100))
-    for each in myPop.get_schedules():
-        print(each.get_fitness())
-   
+    myPopulation = Population(1)
+    myPopulation.initialize(size = 500)
+    #myPopulation.print_schedules()
+    
+    # Population sorted by fitness
+    print('\n** Population sorted by fitness')
+    sortedByFitness    = sorted(myPopulation.get_schedules(),   key = lambda y: y.get_fitness(),  reverse = True)
+    for schedule in sortedByFitness:
+            print(schedule.get_id(),'-',schedule.get_fitness())
+            
+    # Population Detailed Info
+    print('\n** Population Detailed Info')
+    myPopulation.print_population_info()
