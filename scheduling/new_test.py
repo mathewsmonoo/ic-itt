@@ -1,8 +1,9 @@
-# Most 'succesful' code ; STANDALONE code.
-# But contains gaps in some times
-    # To fix this we need to randomize the rooms for each COURSE iteration
+# new_test.py
+# This code works but all rooms in one schedule are the same
+# All classes are the same too :(
+
 from datetime import datetime
-from random import random, seed, shuffle, choice
+from random import random, seed, shuffle
 
 #------------------------------------------------------------------------------
 # Classes
@@ -21,26 +22,17 @@ class Room:
 
 class Course:
     def __init__(self, id, name, students, teacher, times_per_week):
-        self._id                = id
-        self._name              = name
-        self._students          = students
-        self._teacher           = teacher
-        self._times_per_week    = times_per_week
-        self._compatible_rooms  = self.check_compatible_rooms()
+        self._id              = id
+        self._name            = name
+        self._students        = students
+        self._teacher         = teacher
+        self._times_per_week  = times_per_week
 
     def get_id(self):               return self._id
     def get_name(self):             return self._name
     def get_students(self):         return self._students
     def get_teacher(self):          return self._teacher
     def get_times_per_week(self):   return self._times_per_week
-    def get_compatible_rooms(self): return self._compatible_rooms
-    
-    def check_compatible_rooms(self):
-        compatible_rooms = []
-        for room in ROOMS:
-            if room.get_capacity() >= self.get_students():
-                compatible_rooms.append(room)
-        return compatible_rooms
 
     def __str__(self):
         return  f'Course:{self.get_id()}-{self.get_name()}'
@@ -103,25 +95,45 @@ ROOMS = [
 ]
 
 DEPT1_COURSES = [
-    Course(1, "SIGA5", 30, 'T1', 4),
-    Course(2, "GTIA5", 25, 'T2', 4),
-    Course(3, "DW1A5", 30, 'T3', 4),
-    Course(4, "ENGA5", 45, 'T4', 4),
-    Course(5, "PR1A5", 15, 'T5', 4),
+    Course(1, "SIGA5", 30, 'T0', 4),
+    Course(2, "GTIA5", 25, 'T1', 4),
+    Course(3, "DW1A5", 30, 'T2', 4),
+    Course(4, "ENGA5", 45, 'T3', 4),
+    Course(5, "PR1A5", 15, 'T4', 4),
 ]
 
 DEPT2_COURSES = [
-    Course(6,  "11111", 25, 'T6', 4),
-    Course(7,  "22222", 35, 'T7', 4),
-    Course(8,  "33333", 30, 'T8', 4),
-    Course(9,  "44444", 45, 'T9', 4),
-    Course(10, "55555", 20, 'T0', 4),
+    Course(6,  "11111", 25, 'T5', 4),
+    Course(7,  "22222", 35, 'T6', 4),
+    Course(8,  "33333", 30, 'T7', 4),
+    Course(9,  "44444", 45, 'T8', 4),
+    Course(10, "55555", 20, 'T9', 4),
+]
+
+DEPT3_COURSES = [
+    Course(11,  '--3--', 25, 'T10', 3),
+    Course(12,  "[]5[]", 35, 'T11', 5),
+    Course(13,  "<>6<>", 30, 'T12', 6),
+    Course(14,  "><2><", 45, 'T13', 2),
+    Course(15,  "\/4\/", 20, 'T14', 4),
+]
+
+DEPT4_COURSES = [
+    Course(16,  "oo6oo", 25, 'T15', 6),
+    Course(17,  "pp5pp", 35, 'T16', 5),
+    Course(18,  "ww4ww", 30, 'T17', 4),
+    Course(19,  "mm3mm", 45, 'T18', 3),
+    Course(20,  "uu2uu", 20, 'T19', 2),
 ]
 
 DEPARTMENTS = [
     Department(1,'DEPT1', DEPT1_COURSES),
-    Department(2,'DEPT1', DEPT2_COURSES),
+    Department(2,'DEPT2', DEPT2_COURSES),
+    Department(3,'DEPT3', DEPT3_COURSES),
+    Department(4,'DEPT4', DEPT4_COURSES),
 ]
+
+ALL_COURSES = [i for i in DEPARTMENTS]
 
 DAYS_OF_WEEK = [
     'SEG',
@@ -190,23 +202,24 @@ class SingleRandomSchedule:
         counter      = 0
         courses_list = self._courses_list
         shuffle(courses_list)
+        room_list    = ROOMS
+        shuffle(room_list)
         times_list   = self._times
         shuffle(times_list)
         for course in courses_list:
-            compatible_rooms = course.check_compatible_rooms()
-            for j in range(course.get_times_per_week()):    # How many classes per week
-                allocated = False
-                while allocated == False:
-                    room = choice(compatible_rooms)
-                    time = choice(times_list)
-                    if check_available_room(room, time, self.get_occupied_rooms_times()):
-                        new_class = Class(counter, course, time, room)
-                        counter  += 1
-                        self.add_class(new_class)
-                        self.add_occupied_room_time(room, time)
-                    allocated = True
+            for i in range(course.get_times_per_week()):
+                for room in room_list:
+                    for time in times_list:
+                        if check_available_room(room, time, self.get_occupied_rooms_times()):
+                            if check_capacity_students(room, course):
+                                new_class = Class(counter, course, time, room)
+                                counter  += 1
+                                self.add_class(new_class)
+                                self.add_occupied_room_time(room, time)
+                                break
+                            break
+                    break
 
-                        
         self.calculate_fitness()
         return self
 
@@ -227,9 +240,17 @@ class SingleRandomSchedule:
         print(f'Conflicts: {self.get_conflicts()}')                        
         print(f'Fitness:   {self.get_fitness()}')                        
 
-    def try_print(self):
-        for i in self.get_list_of_classes():
-            print(i._course.get_name(),'-',i._room.get_id())
+
+class Population:
+    def __init__(self):
+        self.list_of_schedules = []
+    
+    def add_schedule(self, schedule):
+        self._list_of_schedules.append(schedule)
+    
+    def print_schedules(self):
+        for schedule in self._list_of_schedules:
+            schedule.print_grid()
 
 #------------------------------------------------------------------------------
 # Check Functions
@@ -249,6 +270,13 @@ def check_available_room(room, time, occupied_room_times):
         else:
             return False
 
+def check_capacity_students(room, course):
+	if room.get_capacity() >= course.get_students():
+		return True
+	else:
+		return False
+
+
 #------------------------------------------------------------------------------
 # Runner Function
 #------------------------------------------------------------------------------
@@ -259,20 +287,25 @@ def create_rand_schedule(i, courses_list, occupied_rooms_times):
 
 if __name__=="__main__":
     OCCUPIED_ROOMS_TIMES  = {}
+    print(OCCUPIED_ROOMS_TIMES)
     
-    sing_sched            = create_rand_schedule(1, DEPT1_COURSES, OCCUPIED_ROOMS_TIMES)
-    OCCUPIED_ROOMS_TIMES.update(sing_sched.get_occupied_rooms_times())
+    sched_one            = create_rand_schedule(1, DEPT1_COURSES, OCCUPIED_ROOMS_TIMES)
+    OCCUPIED_ROOMS_TIMES.update(sched_one.get_occupied_rooms_times())
+    print(OCCUPIED_ROOMS_TIMES)
     
-    singl_sched           = create_rand_schedule(2, DEPT2_COURSES, OCCUPIED_ROOMS_TIMES)
-    OCCUPIED_ROOMS_TIMES.update(singl_sched.get_occupied_rooms_times())
+    sched_two           = create_rand_schedule(2, DEPT2_COURSES, OCCUPIED_ROOMS_TIMES)
+    OCCUPIED_ROOMS_TIMES.update(sched_two.get_occupied_rooms_times())
     
-    sing_sched.print_grid()
-    singl_sched.print_grid()
     
-    all_available = {}
-    for room in ROOMS:
-        for i in range(len(TIME_SLOTS)*len(DAYS_OF_WEEK)):
-            holder = {}
-            holder.add(i)
-        all_available[room.get_id()] = holder
-    print(all_available)
+    sched_three           = create_rand_schedule(3, DEPT3_COURSES, OCCUPIED_ROOMS_TIMES)
+    OCCUPIED_ROOMS_TIMES.update(sched_three.get_occupied_rooms_times())
+    
+    sched_four           = create_rand_schedule(4, DEPT4_COURSES, OCCUPIED_ROOMS_TIMES)
+    OCCUPIED_ROOMS_TIMES.update(sched_four.get_occupied_rooms_times())
+    
+    print(OCCUPIED_ROOMS_TIMES)
+    sched_one.print_grid()
+    sched_two.print_grid()
+    sched_three.print_grid()
+    sched_four.print_grid()
+

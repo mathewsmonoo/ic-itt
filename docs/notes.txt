@@ -97,10 +97,10 @@ Metodologia:
 Restrições Hard:
 1- O número de alunos em uma turma excede a capacidade da sala
 3- Laboratórios e salas especiais
-
-
 2- O número de alunos é muito menor do que a capacidade da sala. **quanto? pelo menos 40% da sala cheia??**
 
 
 Definição da População Inicial:
     n alunos em m salas de maneira aleatória
+
+

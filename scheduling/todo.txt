@@ -4,3 +4,9 @@
         tests.py
 
         [sampledata.py] *optional, temporary
+
+
+
+def checkTimeAvailable(time):
+       return (time.get_isAvailable() and room not in occupied_rooms) 
+
