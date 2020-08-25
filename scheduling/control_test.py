@@ -211,13 +211,10 @@ class SingleRandomSchedule:
         for course in courses_list:
             for room in get_compatible_rooms(course):
                 control[room.get_id()] = room.get_occupied_times()
-                print(control)
             for i in range(course.get_times_per_week()):
                 for time in times_list:
                     time_id = time.get_id()
-                    if time_id in control.get(room.get_id()):
-                        continue
-                    else:
+                    if time_id not in control.get(room.get_id()):
                         room.add_ocuppied_time(time)
                         new_class = Class(counter, course, time, room)
                         counter  += 1
@@ -225,35 +222,12 @@ class SingleRandomSchedule:
                         self.add_occupied_room_time(room, time)
                         print('here',time.get_id(),room.get_id())
                         break
+                    else:
+                        continue
                 break
         self.calculate_fitness()
         return self
 
-    def initializes(self):
-        seed = (datetime.now())
-        self.init_times(DAYS_OF_WEEK, TIME_SLOTS)
-        counter      = 0
-        courses_list = self._courses_list
-        shuffle(courses_list)
-        room_list    = ROOMS
-        shuffle(room_list)
-        times_list   = self._times
-        shuffle(times_list)
-        for course in courses_list:
-            for i in range(course.get_times_per_week()):
-                for room in room_list:
-                    for time in times_list:
-                        if check_capacity_students(room, course):
-                            while check_available_room(room, time, self.get_occupied_rooms_times()) == False:
-                                new_class = Class(counter, course, time, room)
-                                counter  += 1
-                                self.add_class(new_class)
-                                self.add_occupied_room_time(room, time)
-                                break
-                        break
-
-        self.calculate_fitness()
-        return self
 
     def print_grid(self):
         print(end="\t\t")
