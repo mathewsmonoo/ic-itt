@@ -220,11 +220,10 @@ class SingleRandomSchedule:
                         counter  += 1
                         self.add_class(new_class)
                         self.add_occupied_room_time(room, time)
-                        print('here',time.get_id(),room.get_id())
                         break
                     else:
                         continue
-                break
+            
         self.calculate_fitness()
         return self
 
