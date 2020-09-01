@@ -1,10 +1,5 @@
-
 from datetime import datetime
 from random import random, seed, shuffle, choice
-
-
-
-
 
 #------------------------------------------------------------------------------
 # Classes
@@ -14,13 +9,22 @@ class Room:
         self._id              = id
         self._capacity        = capacity
         self._occupied_times  = []
+        self._available_times = self.set_all_times_available()
 
-    def get_id(self):              return self._id
-    def get_capacity(self):        return self._capacity
-    def get_occupied_times(self):  return self._occupied_times
+    def get_id(self):                     return self._id
+    def get_capacity(self):               return self._capacity
+    def get_occupied_times(self):         return self._occupied_times
+    def get_available_times(self):        return self._available_times
     
-    def add_ocuppied_time(self, time): self._occupied_times.append(time.get_id())
+    def add_occupied_time(self, time):    self._occupied_times.append(time.get_id())
+    def remove_available_time(self,time): self._available_times.remove(time.get_id())
     
+    def set_all_times_available(self , size= 20):
+        holder = []
+        for i in range(size):
+            holder.append(i)
+        return holder
+            
     def __str__(self):
         return  f'ROOM: {self.get_id()}\t' \
                 f'Capacity:{self.get_capacity()}\t' \
@@ -30,11 +34,10 @@ ROOMS = [
     #    id , capacity
     Room("R1", 50),
     Room("R2", 40),
-    Room("R3", 35),
-    Room("R4", 30),
-    Room("R5", 30),
-    Room("R6", 40),
-    Room("R7", 30),
+    Room("R3", 30),
+    Room("R4", 35),
+    Room("R5", 50),
+    Room("R6", 45),
 ]
 
 
@@ -122,39 +125,38 @@ class Schedule:
         self._times          = create_times(DAYS_OF_WEEK, TIME_SLOTS)
         self._courses_list   = department.get_courses_list()
         self._classes_list   = []
-        self._conflicts      = 0
         self._occupied_times = []
+        self._conflicts      = 0
         
-    def get_times(self):                return self._times
-    def get_classes_list(self):         return self._classes_list
-    def get_courses_list(self):         return self._courses_list
-    def get_occupied_times(self):       return self._occupied_times
+    def get_times(self):               return self._times
+    def get_courses_list(self):        return self._courses_list
+    def get_classes_list(self):        return self._classes_list
+    def get_occupied_times(self):      return self._occupied_times
     
-    def add_conflict(self):             self._conflicts += 1 
-    def add_occupied_time(self,time):   self._occupied_times.append(time) 
-    def add_class(self, new_class):     self._classes_list.append(new_class)
+    def add_conflict(self):            self._conflicts += 1 
+    def add_occupied_time(self,time):  self._occupied_times.append(time.get_id()) 
+    def add_class(self, new_class):    self._classes_list.append(new_class)
     
     def initialize(self):
         counter = 0
-        for course in self.get_courses_list():
-            for i in range(course.get_times_per_week()):
-                room = choice(course.get_compatible_rooms())
-                for time in self.get_times():
-                    time = choice(self.get_times())
-                    if time.get_isOccupied() == False:
-                        if time.get_id() not in room.get_occupied_times():
-                            if time.get_id() not in self.get_occupied_times():
-                                self.add_occupied_time(time)
-                                room.add_ocuppied_time(time)
-                                time.set_occupied()
-                                new_class = Class(counter, course, time, room)
-                                self.add_class(new_class)
-                                counter += 1
-                                break
-                            else:
-                                self.add_conflict()
-                                continue
+        for course in self.get_courses_list():                                      # Each course
+                counter = 0                                                         # Reset counter
+                for room in course.get_compatible_rooms():                          # For each time, get a random room from the list of compatible rooms
+                    for time in self.get_times():                       
+                        if time.get_isOccupied() == False:                          # This schedule time not occupied
+                            if time.get_id() in room.get_available_times():         # Check if this time is in random room's list of available times
+                                if time.get_id() not in self.get_occupied_times():  # Check if this time is not in local occupied times
+                                    self.add_occupied_time(time)
+                                    room.add_occupied_time(time)
+                                    room.remove_available_time(time)
+                                    time.set_occupied()
+                                    new_class = Class(counter, course, time, room)
+                                    self.add_class(new_class)
+                                    counter += 1
+                        if counter == course.get_times_per_week():
                             break
+                    if counter == course.get_times_per_week():
+                        break
         return self
 
     def print_grid(self):
@@ -174,6 +176,10 @@ class Schedule:
         #print(f'Conflicts: {self.get_conflicts()}')                        
         #print(f'Fitness:   {self.get_fitness()}')                        
 
+    def print_classes_list(self):
+        for each_class in self.get_classes_list():
+            print(each_class)
+        print (len(self.get_classes_list()))
 
 #------------------------------------------------------------------------------
 # Sample Data
@@ -181,35 +187,35 @@ class Schedule:
 
 
 DEPT1_COURSES = [
-    Course(1, "SIGA5", 30, 'T0', 4),
-    Course(2, "GTIA5", 25, 'T1', 4),
-    Course(3, "DW1A5", 30, 'T2', 4),
-    Course(4, "ENGA5", 45, 'T3', 4),
-    Course(5, "PR1A5", 15, 'T4', 4),
+    Course(0, "SIGA5", 30, 'T0', 4),
+    Course(1, "GTIA5", 25, 'T1', 4),
+    Course(2, "DW1A5", 30, 'T2', 4),
+    Course(3, "ENGA5", 45, 'T3', 4),
+    Course(4, "PR1A5", 15, 'T4', 4),
 ]
 
 DEPT2_COURSES = [
-    Course(6,  "11111", 25, 'T5', 4),
-    Course(7,  "22222", 35, 'T6', 4),
-    Course(8,  "33333", 30, 'T7', 4),
-    Course(9,  "44444", 30, 'T8', 4),
-    Course(10, "55555", 20, 'T9', 4),
+    Course(5,  "1111A", 25, 'T5', 4),
+    Course(6,  "2222A", 35, 'T6', 4),
+    Course(7,  "3333A", 30, 'T7', 4),
+    Course(8,  "4444A", 30, 'T8', 4),
+    Course(9,  "5555A", 20, 'T9', 4),
 ]
 
 DEPT3_COURSES = [
-    Course(11,  '--3--', 25, 'T10', 3),
-    Course(12,  "[]5[]", 35, 'T11', 5),
-    Course(13,  "<>6<>", 30, 'T12', 6),
-    Course(14,  "><2><", 35, 'T13', 2),
-    Course(15,  "\/4\/", 20, 'T14', 4),
+    Course(10,  '--3--', 25, 'T10', 3),
+    Course(11,  "[]5[]", 35, 'T11', 5),
+    Course(12,  "<>6<>", 30, 'T12', 6),
+    Course(13,  "><2><", 35, 'T13', 2),
+    Course(14,  "\/4\/", 20, 'T14', 4),
 ]
 
 DEPT4_COURSES = [
-    Course(16,  "oo6oo", 25, 'T15', 6),
-    Course(17,  "pp5pp", 35, 'T16', 5),
-    Course(18,  "ww4ww", 30, 'T17', 4),
-    Course(19,  "mm3mm", 45, 'T18', 3),
-    Course(20,  "uu2uu", 20, 'T19', 2),
+    Course(15,  "oo4oo", 25, 'T15', 4),
+    Course(16,  "pp4pp", 35, 'T16', 4),
+    Course(17,  "ww4ww", 30, 'T17', 4),
+    Course(18,  "mm4mm", 45, 'T18', 4),
+    Course(19,  "uu4uu", 20, 'T19', 4),
 ]
 
 DEPARTMENTS = [
@@ -217,6 +223,8 @@ DEPARTMENTS = [
     Department(2,'DEPT2', DEPT2_COURSES),
     Department(3,'DEPT3', DEPT3_COURSES),
     Department(4,'DEPT4', DEPT4_COURSES),
+    Department(5,'DEPT5', DEPT3_COURSES),
+    Department(6,'DEPT6', DEPT2_COURSES),
 ]
 
 DAYS_OF_WEEK = [
@@ -234,7 +242,6 @@ TIME_SLOTS = [
     '21:50-22:40',
 ]
 
-
 class Population:
     def __init__(self, schedules_list = []):
         self._schedules_list = schedules_list
@@ -249,7 +256,10 @@ class Population:
             print(f'\n---- #{i} -----',end = "")
             schedule.print_grid()
             
-
+    def print_classes_list(self):
+        for schedule in self.get_schedules_list():
+            schedule.print_classes_list()
+            
 
 #------------------------------------------------------------------------------
 # Methods
@@ -263,7 +273,7 @@ def create_times(DAYS_OF_WEEK = DAYS_OF_WEEK, TIME_SLOTS = TIME_SLOTS):
             counter +=1 
     return holder
 
-def check_compatible_rooms(qty_students):
+def check_compatible_rooms(qty_students):   # Returns a list with all rooms that fit that course students'
     holder = []
     for room in ROOMS:
         if room.get_capacity() >= qty_students:
@@ -273,7 +283,7 @@ def check_compatible_rooms(qty_students):
 def create_population(size = 1):
     holder = []
     my_population = Population()
-    for i in range(0, size):
+    for i in range(size):
         holder_schedule = Schedule(i,DEPARTMENTS[i])
         holder_schedule.initialize()
         my_population.add_schedule(holder_schedule)
@@ -284,5 +294,7 @@ def create_population(size = 1):
 # Runner Code
 #------------------------------------------------------------------------------
 if __name__ == "__main__":
-    population = create_population(size = 4)
-    population.print_population()
+    my_population = create_population(size = 6)
+    my_population.print_population()
+    for room in ROOMS:
+        print(room)

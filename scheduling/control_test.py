@@ -221,8 +221,7 @@ class SingleRandomSchedule:
                         self.add_class(new_class)
                         self.add_occupied_room_time(room, time)
                         break
-                    else:
-                        continue
+                    
             
         self.calculate_fitness()
         return self
