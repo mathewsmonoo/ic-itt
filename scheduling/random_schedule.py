@@ -41,7 +41,6 @@ ROOMS = [
     Room("R6", 45),
 ]
 
-
 class Course:
     def __init__(self, id, name, qty_students, teacher, times_per_week):
         self._id                = id
@@ -136,8 +135,18 @@ class Schedule:
         self._occupied_times = []
         self._conflicts      = 0
         
-    def get_times(self):              return self._times
-    def get_courses_list(self):       return self._courses_list
+    def get_rnd_times(self):
+        seed = datetime.now()      
+        holder = self._times
+        shuffle(holder)
+        return holder
+    
+    def get_rnd_courses_list(self):
+        seed = datetime.now()
+        holder = self._courses_list
+        shuffle(holder)
+        return holder
+    
     def get_classes_list(self):       return self._classes_list
     def get_occupied_times(self):     return self._occupied_times
     def get_conflicts(self):          return self._conflicts
@@ -148,13 +157,16 @@ class Schedule:
     def add_occupied_time(self,time):                   self._occupied_times.append(time.get_id()) 
     def add_class(self, new_class):                     self._classes_list.append(new_class)
     def overwrite_class(self, position, new_class) :   self._classes_list[position] = new_class
-    
+    def shuffle_classes_list(self): 
+        seed = datetime.now()
+        shuffle(self._classes_list)
+        
     def initialize(self):
         counter = 0
-        for course in self.get_courses_list():                                      # Each course
+        for course in self.get_rnd_courses_list():                                      # Each course
                 counter = 0                                                         # Reset counter
                 for room in course.get_rand_compatible_rooms():
-                    for time in self.get_times():                       
+                    for time in self.get_rnd_times():
                         if time.get_isOccupied() == False:                          # This schedule time not occupied
                             if time.get_id() in room.get_available_times():         # Check if this time is in random room's list of available times
                                 if time.get_id() not in self.get_occupied_times():  # Check if this time is not in local occupied times
@@ -343,17 +355,21 @@ def check_compatible_rooms(qty_students):   # Returns a list with all rooms that
     return holder
 
 def create_population(size):
-    my_population = Population()
-    for i in range(size):
-        holder_schedule = Schedule(i,DEPARTMENTS[i])
-        holder_schedule.initialize()
-        my_population.add_schedule(holder_schedule)
-    while True:
-        if my_population.get_total_classes_num() != 120:
-            if len(my_population.get_schedules_list()) != 6:
-                print('passing')
-                return create_population(size)
-        break
+    finished = False
+    while not finished:
+        counter = 0
+        try:
+            my_population = Population()
+            for i in range(size):
+                holder_schedule = Schedule(i,DEPARTMENTS[i])
+                holder_schedule.initialize()
+                counter += holder_schedule.get_classes_num()
+                my_population.add_schedule(holder_schedule)
+            if len(my_population.get_schedules_list()) == size:
+                if my_population.get_total_classes_num() == 120:
+                    finished = True
+        except:
+            continue
     return my_population
 
 
@@ -361,15 +377,8 @@ def create_population(size):
 # Runner Code
 #------------------------------------------------------------------------------
 if __name__ == "__main__":
-    my_population = Population()
-    while True:
-        if my_population.get_total_classes_num() != 120:
-            my_population = create_population(size = 6)
-        else:
-            break
+    my_population = create_population(size = 6)
 
     my_population.print_population()
-    my_population.get_total_classes_num()
+            
     my_population.get_schedule(1)
-    genetic_crossover = GeneticAlgorithm(my_population)
-    genetic_crossover.mutate_schedule()
