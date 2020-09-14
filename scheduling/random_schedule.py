@@ -306,6 +306,12 @@ class Population:
 
     def add_schedule(self, schedule):   self._schedules_list.append(schedule)
 
+    def shuffle_classes(self):
+        for each in self.get_schedules_list():
+            holder = each.get_classes_list()
+            shuffle(holder)
+            each._classes_list = holder
+
     def print_population(self):
         for i,schedule in enumerate(self.get_schedules_list()):
             print(f'\n---- #{i+1} -----',end = "")
@@ -357,8 +363,8 @@ def check_compatible_rooms(qty_students):   # Returns a list with all rooms that
 def create_population(size):
     finished = False
     while not finished:
-        counter = 0
         try:
+            counter = 0
             my_population = Population()
             for i in range(size):
                 holder_schedule = Schedule(i,DEPARTMENTS[i])
@@ -368,8 +374,12 @@ def create_population(size):
             if len(my_population.get_schedules_list()) == size:
                 if my_population.get_total_classes_num() == 120:
                     finished = True
+                else:
+                    pass
+            else:
+                pass
         except:
-            continue
+            pass
     return my_population
 
 
@@ -378,7 +388,7 @@ def create_population(size):
 #------------------------------------------------------------------------------
 if __name__ == "__main__":
     my_population = create_population(size = 6)
-
+    my_population.print_population()
+    my_population.shuffle_classes()
     my_population.print_population()
             
-    my_population.get_schedule(1)
