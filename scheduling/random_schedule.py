@@ -156,14 +156,14 @@ class Schedule:
     def add_conflict(self):                             self._conflicts += 1 
     def add_occupied_time(self,time):                   self._occupied_times.append(time.get_id()) 
     def add_class(self, new_class):                     self._classes_list.append(new_class)
-    def overwrite_class(self, position, new_class) :   self._classes_list[position] = new_class
+    def overwrite_class(self, position, new_class):     self._classes_list[position] = new_class
     def shuffle_classes_list(self): 
         seed = datetime.now()
         shuffle(self._classes_list)
-        
+
     def initialize(self):
         counter = 0
-        for course in self.get_rnd_courses_list():                                      # Each course
+        for course in self.get_rnd_courses_list():                                  # Each course
                 counter = 0                                                         # Reset counter
                 for room in course.get_rand_compatible_rooms():
                     for time in self.get_rnd_times():
@@ -173,7 +173,7 @@ class Schedule:
                                     self.add_occupied_time(time)
                                     room.add_occupied_time(time)
                                     room.remove_available_time(time)
-                                    time.set_occupied()
+                                    #time.set_occupied()
                                     new_class = Class(counter, course, time, room)
                                     self.add_class(new_class)
                                     counter += 1
@@ -297,7 +297,7 @@ class Population:
         
     def get_schedules_list(self):               return self._schedules_list
     def get_schedule(self, position):           return self._schedules_list[position]
-    def get_size(self):                         return len(self.get_schedules_list)
+    def get_size(self):                         return len(self.get_schedules_list())
     def get_total_classes_num(self):
         counter = 0          
         for each in self.get_schedules_list():
@@ -337,9 +337,6 @@ class GeneticAlgorithm:
 
     def __str__(self):
         return self.get_population()
-    
-    
-    
 
 #------------------------------------------------------------------------------
 # Methods
@@ -361,27 +358,19 @@ def check_compatible_rooms(qty_students):   # Returns a list with all rooms that
     return holder
 
 def create_population(size):
-    finished = False
-    while not finished:
-        try:
-            counter = 0
-            my_population = Population()
-            for i in range(size):
-                holder_schedule = Schedule(i,DEPARTMENTS[i])
+    while True:
+        my_population = Population()
+        for i in range(size):
+            holder_schedule = Schedule(i,DEPARTMENTS[i])
+            try:
                 holder_schedule.initialize()
-                counter += holder_schedule.get_classes_num()
-                my_population.add_schedule(holder_schedule)
-            if len(my_population.get_schedules_list()) == size:
-                if my_population.get_total_classes_num() == 120:
-                    finished = True
-                else:
-                    pass
-            else:
-                pass
-        except:
-            pass
-    return my_population
+            except holder_schedule.get_classes_num() != 20:
+                raise("a")
+            holder_schedule.initialize()
+            my_population.add_schedule(holder_schedule)
 
+        if my_population.get_total_classes_num() == 120:
+            return my_population
 
 #------------------------------------------------------------------------------
 # Runner Code
@@ -389,6 +378,7 @@ def create_population(size):
 if __name__ == "__main__":
     my_population = create_population(size = 6)
     my_population.print_population()
-    my_population.shuffle_classes()
-    my_population.print_population()
-            
+    #my_population_two = create_population(size = 6)
+    #my_population_two.print_population()
+    #my_population.shuffle_classes()
+    #my_population.print_population()
