@@ -244,13 +244,13 @@ class Schedule:
         holder = self._times
         shuffle(holder)
         return holder
-    
+
     def get_rnd_courses_list(self):
         seed = datetime.now()
         holder = self._courses_list
         shuffle(holder)
         return holder
-    
+
     def get_classes_list(self):       return self._classes_list
     def get_occupied_times(self):     return self._occupied_times
     def get_conflicts(self):          return self._conflicts
@@ -289,7 +289,7 @@ class Schedule:
                             else:
                                 self.add_conflict()
                         else:
-                            self.add_conflict()   
+                            self.add_conflict()
                         if counter == course.get_times_per_week():
                             break
                     if counter == course.get_times_per_week():
@@ -317,14 +317,19 @@ class Schedule:
         for each_class in self.get_classes_list():
             print(each_class)
         print (len(self.get_classes_list()))
+
 #------------------------------------------------------------------------------
 # Sample Data
 #------------------------------------------------------------------------------
 
-class Population:
+
+
+
+class Individual:
+    #metrica
     def __init__(self, schedules_list = []):
         self._schedules_list = schedules_list
-        
+
     def get_schedules_list(self):               return self._schedules_list
     def get_schedule(self, position):           return self._schedules_list[position]
     def get_size(self):                         return len(self.get_schedules_list())
@@ -416,5 +421,7 @@ def create_population(size):
 if __name__ == "__main__":
     my_population = create_population(size = 6)
     my_population.print_population()
+    '''
     my_population2 = create_population(size = 6)
     my_population2.print_population()
+    '''
