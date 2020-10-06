@@ -5,6 +5,7 @@ DAYS_OF_WEEK = [
     'QUI',
     'SEX',
 ]
+
 TIME_SLOTS = [
     '19:00-19:50',
     '19:50-20:40',
@@ -74,10 +75,12 @@ DEPT6_COURSES = [
 ]
 
 DEPARTMENTS = [
-    [DEPT1_COURSES],
-    [DEPT2_COURSES],
-    [DEPT3_COURSES],
-    [DEPT4_COURSES],
-    [DEPT5_COURSES],
-    [DEPT6_COURSES],
+    DEPT1_COURSES,
+    DEPT2_COURSES,
+    DEPT3_COURSES,
+    DEPT4_COURSES,
+    DEPT5_COURSES,
+    DEPT6_COURSES,
 ]
+for _ in DEPARTMENTS:
+    print (_)

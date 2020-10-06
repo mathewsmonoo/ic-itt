@@ -127,6 +127,7 @@ class Schedule:
         self._classes_list    = []
         self._occupied_times  = []
         self._conflicts       = 0
+        #self.initialize()    # needs checking. can i call it from here?
 
     def set_courses_list(self):
         return self._dados.get_dept_courses()
@@ -165,8 +166,8 @@ class Schedule:
         self._classes_list = holder
 
     def initialize(self):
-        print(self._times)
-        print(self._courses_list)
+        #print(self._times)
+        #print(self._courses_list)
         counter = 0
         #for course in self.get_rnd_courses_list():                                  # Each course
         for course in self.get_courses_list():     # Each course

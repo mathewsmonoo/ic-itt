@@ -15,27 +15,27 @@ def generate_times(daysOfWeek, timeSlots):   # This method returns a list of Tim
             holder = Time(counter,i,j)
             myList.append(holder)
             counter +=1
-    for _ in myList:
-        print(_)
+    # for _ in myList:
+    #     print(_)
     return myList
 
 def generate_rooms(roomList):
     myList = []
     for each in roomList:
         myList.append(Room(each[0],each[1]))
-    for _ in myList:
-        print(_)
+    # for _ in myList:
+    #     print(_)
     return myList
 
 def generate_depts(deptList):
     counter = 0
     myList = []
     for each in deptList:
-        dept_courses = generate_courses(each[0])
+        dept_courses = generate_courses(each)
         myList.append(Department(counter,dept_courses))
         counter += 1
-    for _ in myList:
-        print(_)
+    # for _ in myList:
+    #     print(_)
     return myList
 
 def generate_courses(courseList):
@@ -44,15 +44,15 @@ def generate_courses(courseList):
     for each in courseList:
         myList.append(Course(counter,each[0],each[1],each[2]))
         counter += 1
-    for _ in myList:
-        print(_)
+    # for _ in myList:
+    #     print(_)
     return myList
 
 def create_individual(size):
     dados = Dados()
     counter = 0
     my_individual = Individual()
-    while counter < 120 :
+    while counter < 120:
         for i in range(size):
             holder_schedule = Schedule(dados,i)
             holder_schedule.initialize()
@@ -61,8 +61,8 @@ def create_individual(size):
                 my_individual.add_schedule(holder_schedule)
                 counter += holder_schedule.get_classes_num()
     return my_individual
-        
-    """
+
+"""
 def create_individual(dados, size):
     while True:
         my_individual = Individual()
@@ -76,7 +76,7 @@ def create_individual(dados, size):
         print('\n\n\n', my_individual.get_total_classes_num(),'\n\n')
         if my_individual.get_total_classes_num() == 120:
             return my_individual
-    """        
+"""        
 
 class Dados:
     def __init__(self):
