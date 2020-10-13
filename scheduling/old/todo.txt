@@ -2,5 +2,12 @@
         models.py
         functions.py
         tests.py
-
         [sampledata.py] *optional, temporary
+
+ Got: 
+   main.py
+   classes.py
+   methods.py
+   sampledata.py
+Still needs:
+   tests.py
