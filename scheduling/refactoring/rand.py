@@ -114,12 +114,15 @@ def create_class(counter, course, time, room):
 def create_schedule(courseList,timeList,roomList):
     rooms    = roomList
     courses  = courseList
+    shuffle(courses)                                       # Randomizing
     times    = timeList
+    shuffle(times)                                         # Randomizing
     schedule = []
-    counter = 0
+    counter  = 0
     for course in courses:
         repeat = 0
-        compatible_rooms = get_compatible_rooms(course)
+        compatible_rooms = get_compatible_rooms(course)    # Randomizing
+        shuffle(compatible_rooms)
         for room in compatible_rooms:
             for time in times:
                 if repeat == course[3]:
@@ -131,13 +134,29 @@ def create_schedule(courseList,timeList,roomList):
                             holder = rooms[room][2]
                             holder.append(time_id)
                             rooms[room][2] = holder
-                            for _ in rooms:
-                                print(_)
                             new_class = create_class(counter,course,time,rooms[room])
                             schedule.append(new_class)
                             counter += 1
                             repeat  += 1
     return schedule
+
+def organize_schedule(schedule):         # In order to work, Course Name must have last character set as semester id.
+    semList = []                         # Ex: LOGA1 = 1st semester; SOPA2 = 2nd semester; DW2A6 = 6th semester.
+    for each in schedule:
+        holder = int((each[1][1])[-1])   # Covnert last char of CourseName to Int 
+        semList.append(holder)
+    semList = list(set(semList))         # Convert to SET to get unique items, convert back to LIST
+    semList.sort()
+    new_sched = []
+    for item in semList:
+        semester = []
+        for course in schedule:
+            beta = int((course[1][1])[-1])
+            if beta == item:
+                semester.append(course)
+        new_sched.append(semester)
+    return(new_sched)
+
 
 def print_schedule(schedule):
     for day in DOW:
@@ -149,23 +168,6 @@ def print_schedule(schedule):
                 if each[2][2] == time and each[2][1] == day:  #time_time == time
                     print(each[1])
     pass
-
-def print_scheduleA(schedule):
-    for each in schedule:
-        print('00',  each[0][0])
-        print('course-id',  each[1][0])
-        print('course-name',each[1][1])
-        print('course-qty', each[1][2])
-        print('course-tpw', each[1][3])
-        #print('course-rooms',each[1][4])
-        print('time-id',  each[2][0])
-        print('time-day', each[2][1])
-        print('time-time',each[2][2])
-        print('time-flag',each[2][3])
-        print('room-id',  each[3][0])
-        print('room-capacity',each[3][1])
-        print('room-occupied',each[3][2])
-        print()
 
 def print_grid(schedule):
     print('\n','-'*100)
@@ -182,22 +184,7 @@ def print_grid(schedule):
                         print(f'{each[1][1]}(R{each[3][0]})', end="\t")
         print('\n','-'*100)
         
-
-def print_gridA(schedule):
-    print('\n','-'*100)
-    print(end="\t\t")
-    for day in DOW:
-        print(day,end="\t\t")
-    print('\n')    
-    for time_slot in TL:
-        print(time_slot, end="\t")
-        for day in DOW:
-            for each in schedule:
-                if each[2][2] == time_slot: 
-                    if each[2][1] == day:
-                        print(f'{each[1][1]}(R{each[3][0]})', end="\t")
-        print('\n','-'*100)
-        
+       
 if (__name__ == '__main__'):
     #Defining VARS
     rooms = create_rooms(ROOMS)
@@ -206,7 +193,11 @@ if (__name__ == '__main__'):
     courses = create_courses(CRS,rooms)
     mysch   = create_schedule(courses,times,rooms)
     for i in mysch:
-        print('CLASSid', i[0], '\tCOURSEinfo\t', i[1], '\tTIMEinfo', i[2], '\tROOMid', i[3][0])
+        print('CLASSid', i[0], '\tCOURSE\t', i[1], '\t\tTIME', i[2], '\tROOMid', i[3][0])
+        
+    organized = organize_schedule(mysch)
+    for i in organized:
+        print('CLASSid', i[0], '\tCOURSE\t', i[1], '\t\tTIME', i[2], '\tROOMid', i[3][0])
     
     #print_grid(mysch)
     #print_schedule(mysch)
