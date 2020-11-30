@@ -157,20 +157,7 @@ def organize_schedule(schedule):         # In order to work, Course Name must ha
         new_sched.append(semester)
     return(new_sched)
 
-
-def print_schedule(schedule):
-    for day in DOW:
-        print(day, end="\t\t")
-    print("\n")
-    for day in DOW:
-        for time in TL:
-            for each in schedule:
-                if each[2][2] == time and each[2][1] == day:  #time_time == time
-                    print(each[1])
-    pass
-
 def print_grid(schedule):
-    print('\n','-'*100)
     print(end="\t\t")
     for day in DOW:
         print(day,end="\t\t")
@@ -193,11 +180,13 @@ if (__name__ == '__main__'):
     courses = create_courses(CRS,rooms)
     mysch   = create_schedule(courses,times,rooms)
     for i in mysch:
+        print('SCHEDULE #', i)
         print('CLASSid', i[0], '\tCOURSE\t', i[1], '\t\tTIME', i[2], '\tROOMid', i[3][0])
         
     organized = organize_schedule(mysch)
-    for i in organized:
-        print('CLASSid', i[0], '\tCOURSE\t', i[1], '\t\tTIME', i[2], '\tROOMid', i[3][0])
     
-    #print_grid(mysch)
-    #print_schedule(mysch)
+    for i,j in enumerate(organized):
+        print('*'*120)
+        print('\t\t SCHEDULE # ', i)
+        print('*'*120)
+        print_grid(j)
